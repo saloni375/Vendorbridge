@@ -35,8 +35,6 @@ The vision of VendorBridge is to:
 
 ## 🏗️ Tech Stack
 
-> Update this section according to your actual project
-
 * Frontend: React / Vite
 * Backend: Node.js / Express
 * Database: PostgreSQL
