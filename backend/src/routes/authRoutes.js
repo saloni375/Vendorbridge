@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { Router } from "express";
 import { query, withTransaction } from "../config/db.js";
@@ -138,7 +139,31 @@ router.post(
       return res.status(400).json({ message: "Email is required" });
     }
 
-    return sendOk(res, { message: "If the account exists, password reset instructions were sent." });
+    const { rows } = await query("select id, email from users where lower(email) = lower($1) limit 1", [email]);
+    const user = rows[0];
+
+    if (user) {
+      const token = crypto.randomBytes(24).toString("hex");
+      await query(
+        `create table if not exists password_reset_tokens (
+          id serial primary key,
+          user_id integer references users(id),
+          token text not null,
+          expires_at timestamp not null,
+          used_at timestamp,
+          created_at timestamp default now()
+        )`
+      );
+      await query(
+        `insert into password_reset_tokens (user_id, token, expires_at)
+         values ($1, $2, now() + interval '30 minutes')`,
+        [user.id, token]
+      );
+    }
+
+    return sendOk(res, {
+      message: "If the account exists, password reset instructions were prepared.",
+    });
   })
 );
 

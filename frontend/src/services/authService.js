@@ -15,6 +15,15 @@ function createMockToken(email) {
   return btoa(`${email}:${Date.now()}:vendorbridge`);
 }
 
+function isExpiredJwt(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp ? payload.exp * 1000 <= Date.now() : false;
+  } catch {
+    return false;
+  }
+}
+
 function createUserFromSignup(payload) {
   return {
     id: crypto.randomUUID(),
@@ -91,7 +100,8 @@ export const authService = {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
     const userValue = localStorage.getItem(AUTH_USER_KEY);
 
-    if (!token || !userValue) {
+    if (!token || !userValue || isExpiredJwt(token)) {
+      this.clearSession();
       return { token: null, user: null };
     }
 

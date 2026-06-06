@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { authService } from "../services/authService.js";
+import { setUnauthorizedHandler } from "../services/api.js";
 import { AuthContext } from "./auth-context.js";
 
 export function AuthProvider({ children }) {
@@ -58,6 +59,11 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
     setToken(null);
   }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(logout);
+    return () => setUnauthorizedHandler(null);
+  }, [logout]);
 
   const value = useMemo(
     () => ({
