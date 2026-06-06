@@ -33,15 +33,15 @@ The vision of VendorBridge is to:
 
 ---
 
-## 🏗️ Tech Stack (edit as needed)
+## 🏗️ Tech Stack
 
 > Update this section according to your actual project
 
 * Frontend: React / Vite
 * Backend: Node.js / Express
-* Database: PostgreSQL / MongoDB
+* Database: PostgreSQL
 * Authentication: JWT / Session-based auth
-* Styling: Tailwind CSS / CSS Modules
+* Styling: Tailwind CSS 
 
 ---
 
